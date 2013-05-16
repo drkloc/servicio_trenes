@@ -1,0 +1,6 @@
+[submodule "src/servicio_trenes_socketio"]
+	path = src/servicio_trenes_socketio
+	url = https://github.com/drkloc/servicio_trenes_socketio
+[submodule "src/django"]
+	path = src/servicio_trenes_stream_n_rpc
+	url = https://github.com/drkloc/servicio_trenes_stream_n_rpc
