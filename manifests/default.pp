@@ -1,50 +1,69 @@
-exec { 'make_update':
-    command => 'sudo yum update',
+Package{
+  ensure => present,
 }
 
-package {
-  ['vim', 'git-core', 'curl']:
-    ensure   => latest,
-    require  => Exec['make_update'],
+service{"iptables":
+    ensure => stopped,
 }
 
-package {
-  [
-    'python-pip',
-    'python-software-properties',
-    'python-setuptools',
-    'python27-devel',
-    'build-essential'
-  ]:
-    ensure   => latest,
-    require  => Exec['make_update'],
-}
+# package { 'epel-release-6-8.noarch':
+#   provider => 'rpm',
+#   source => 'http://epel.mirror.mendoza-conicet.gob.ar/6/x86_64/epel-release-6-8.noarch.rpm',
+#   ensure => present
+# }
 
-package{
-  ['openssl-devel', 'gcc-c++']:
-    ensure => latest,
-    require => Exec['make_update']
-}
+# package{
+#   ['libevent-devel', 'libevent-headers']:
+# }
 
-package {
-  ['fabric', 'virtualenv']:
-    ensure   => latest,
-    provider => pip,
-    require  => Package[
-      'python-devel',
-      'python-pip',
-      'python-setuptools'
-    ],
-}
+# class systools{
+#   package {
+#     ['curl', 'wget']:
+#       require => Package['epel-release-6-8.noarch']
+#   }
+# }
 
-package {
-  ['redis', 'mongodb']:
-    ensure => latest,
-    require => Exec['make_update']
-}
+# class python{
+#   package{
+#     ['python-devel']:
+#       require => Package['epel-release-6-8.noarch'],
+#   }
 
-package{
-  ['libevent', 'libevent-devel', 'libevent-headers']:
-    ensure => lastest,
-    require => Exec['make_update']
-}
+#   package {
+#     [
+#       'python-pip',
+#       'python-setuptools',
+#     ]:
+#       require => Package['python-devel']
+#   }
+#   package {
+#     ['fabric', 'virtualenv']:
+#       provider => 'pip',
+#       require  => Package[
+#         'python-devel',
+#         'python-pip',
+#         'python-setuptools'
+#       ],
+#   }
+# }
+
+# class nodejs{
+#   package{
+#     ['nodejs', 'npm']:
+#       require => Package['epel-release-6-8.noarch'],
+#   }
+# }
+
+# class mongodb{
+#   package {
+#     ['mongodb-server', 'mongodb']:
+#       require => Package['epel-release-6-8.noarch']
+#   }
+#   service { "mongod":
+#     enable => true,
+#     ensure => running
+#   }
+# }
+
+include redis
+include django_app
