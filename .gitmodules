@@ -1,6 +1,0 @@
-[submodule "servicio_trenes_socketio"]
-	path = servicio_trenes_socketio
-	url = https://github.com/drkloc/servicio_trenes_socketio.git
-[submodule "servicio_trenes_stream_n_rpc"]
-	path = servicio_trenes_stream_n_rpc
-	url = https://github.com/drkloc/servicio_trenes_stream_n_rpc.git

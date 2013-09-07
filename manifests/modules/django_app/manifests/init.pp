@@ -24,7 +24,7 @@ class django_app{
     owner   => "root",
     group   => "root",
   }
-
+  
   service { "httpd":
     enable => true,
     ensure => running,
