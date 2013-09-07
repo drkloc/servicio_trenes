@@ -5,7 +5,7 @@ import settings
 setup_environ(settings)
 
 from datetime import datetime, timedelta
-from lineas.models import Linea, ProximoTren
+from lineas.documents import Linea, ProximoTren
 
 import zerorpc
 

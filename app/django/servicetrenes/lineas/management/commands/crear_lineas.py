@@ -1,9 +1,6 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.sites.models import Site
-from django.conf import settings
+from django.core.management.base import BaseCommand
 
-from lineas.models import Linea
+from lineas.documents import Linea
 
 LINEAS = {
     'sarmiento': {
@@ -42,8 +39,10 @@ LINEAS = {
     },
 }
 
+
 class Command(BaseCommand):
     help='Crea las lineas y sus respectivas estaciones en db'
+
     def handle(self,*args,**options):
         lineas_in_db = [
             l['service_id'] for l in Linea.objects.all().values('service_id')

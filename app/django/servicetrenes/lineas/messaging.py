@@ -25,7 +25,7 @@ def send_proximo_tren(d):
 
 
 def process_proximos_trenes():
-    from lineas.models import Linea, ProximoTren
+    from lineas.documents import Linea, ProximoTren
     connection = establish_connection()
     consumer = Consumer(
         connection=connection,

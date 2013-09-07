@@ -7,7 +7,7 @@ class GetProximosTrenesTask(PeriodicTask):
     run_every = timedelta(seconds=10)
 
     def run(self, **kwargs):
-        from lineas.models import Linea
+        from lineas.documents import Linea
         from lineas.service import ProximoTrenService
         for linea in Linea.objects.all():
             ProximoTrenService(linea)

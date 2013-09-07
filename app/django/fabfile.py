@@ -58,7 +58,8 @@ def push(message):
 def DEV():
     env.hosts = ['localhost']
     env.directory = FAB_ROOT
-    env.activate = 'source %s' % os.path.join(FAB_ROOT, 'bin/activate')
+    env.virtualenv = '~/.virtualenvs/horarios-trenes'
+    env.activate = 'source %s' % os.path.join(env.virtualenv, 'bin/activate')
     env.project_directory = 'redminescore'
 
 
