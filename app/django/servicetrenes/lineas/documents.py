@@ -1,5 +1,3 @@
-from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 from mongoengine import *
 
@@ -17,7 +15,7 @@ class Linea(Document):
         return ProximoTren.objects.filter(linea=self)
 
     def __unicode__(self):
-        return u'%s' % self.nombre
+        return u'%s - %s' % (self.nombre, self.service_id)
 
 
 class ProximoTren(Document):
@@ -25,7 +23,7 @@ class ProximoTren(Document):
     _estacion = IntField()
     proximos_origen = ListField()
     proximos_destino = ListField()
-    created = DateTimeField(default=datetime.datetime.now)
+    created = DateTimeField(default=datetime.now)
 
     meta = {
         'max_documents': 1000000,

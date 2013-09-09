@@ -45,7 +45,7 @@ class Command(BaseCommand):
 
     def handle(self,*args,**options):
         lineas_in_db = [
-            l['service_id'] for l in Linea.objects.all().values('service_id')
+            l.service_id for l in Linea.objects.all()
         ]
         for linea in LINEAS:
             service_id = LINEAS[linea]['id']

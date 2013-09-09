@@ -5,7 +5,7 @@ from core.utils import get_redis_client
 import json
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 
 logger = logging.getLogger('trenes')
 
@@ -18,7 +18,6 @@ def send_proximo_tren(d):
         routing_key="save_proximos_trenes",
         exchange_type="direct"
     )
-    logger.debug(('suscribing', d))
     publisher.send(d)
     publisher.close()
     connection.close()
@@ -36,17 +35,16 @@ def process_proximos_trenes():
     )
     before = datetime.now()
     for message in consumer.iterqueue():
+        d = json.loads(message.body)
         try:
-            d = json.loads(message.body)
-            logger.debug(('saving', d))
             pt = ProximoTren()
-            pt.linea = Linea.objects.get(pk=d['linea'])
+            pt.linea = Linea.objects.get(id=d['linea'])
             pt._estacion = d['estacion']
             pt.proximos_origen = d['proximos_origen']
             pt.proximos_destino = d['proximos_destino']
             pt.save()
-        except:
-            pass
+        except Exception as e:
+            logger.debug(d, e)
         message.ack()
     pts = ProximoTren.objects.filter(created__gt=before).order_by('-id')
     pts = [

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # import django env
 from django.core.management import setup_environ
-import settings
+from servicetrenes import settings
 setup_environ(settings)
 
 from datetime import datetime, timedelta
@@ -15,7 +15,7 @@ class ZRPCServer(object):
     def lineas(self):
         return [
             {
-                'id': l.id,
+                'id': str(l.id),
                 'nombre': l.nombre,
             }
             for l in Linea.objects.all()
@@ -23,7 +23,7 @@ class ZRPCServer(object):
 
     def estaciones(self, linea):
         try:
-            l = Linea.objects.get(pk=linea)
+            l = Linea.objects.get(id=linea)
             return l.estaciones
         except:
             return {
@@ -32,7 +32,7 @@ class ZRPCServer(object):
 
     def proximos_trenes(self, linea, estacion):
         try:
-            l = Linea.objects.get(pk=linea)
+            l = Linea.objects.get(id=linea)
             pts = ProximoTren.objects.filter(
                 linea=l,
                 _estacion=int(estacion),
@@ -59,5 +59,5 @@ class ZRPCServer(object):
 
 
 s = zerorpc.Server(ZRPCServer())
-s.bind("tcp://0.0.0.0:4242")
+s.bind(settings.RPC_SERVER)
 s.run()
