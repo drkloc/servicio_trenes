@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head profile="http://www.w3.org/2005/10/profile">
+        <link href="{{STATIC_URL}}css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="{{STATIC_URL}}css/bootstrap-responsive.min.css" media="screen" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+    <script type="text/javascript">
+        var lineas = {{lineas|safe}};
+        var d = {};
+    </script>
+    {% verbatim %}
+    <script type="text/x-handlebars" id="lineas">
+    <div class="container">
+        <div class="row">
+            <div class="span2">
+            <legend>líneas</legend>
+            <ul>
+            {{#each}}
+            <li>
+            {{#link-to 'linea' this}}
+                {{nombre}}
+            {{/link-to}}
+            </li>
+            {{/each}}
+            </ul>
+            </div>
+            <div class="span10" >
+                {{outlet}}
+            </div>
+        </div>
+    </div>
+    </script>
+    <script type="text/x-handlebars" id="linea">    
+    <legend>{{nombre}}</legend>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Estación</th>
+                <th>Próximos Origen</th>
+                <th>Próximos Destino</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each estacion in estaciones}}
+            <tr>
+                <td>{{estacion.estacion}}</td>
+                <td>
+                    {{format-minutes estacion.proximos_origen}}
+                </td>
+                <td>
+                    {{format-minutes estacion.proximos_destino}}
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+    </script>
+    {% endverbatim %}
+    <script src="{{STATIC_URL}}js/libs/jquery-1.9.1.js"></script>
+    <script src="{{STATIC_URL}}js/libs/socket.io.js"></script>
+    <script src="{{STATIC_URL}}js/libs/bootstrap.min.js"></script>
+    <script src="{{STATIC_URL}}js/libs/handlebars-1.0.0.js"></script>
+    <script src="{{STATIC_URL}}js/libs/ember-1.0.0.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
+    <script src="{{STATIC_URL}}js/app.js"></script>
+    </body>
+</html>

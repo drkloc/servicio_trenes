@@ -4,7 +4,6 @@
   "description": "simple client for redis pubsub that post messages through websockets",
   "main": "app.js",
   "dependencies": {
-    "express": "~3.2.4",
     "hiredis": "~0.1.15",
     "redis": "~0.8.3",
     "socket.io": "~0.9.14"

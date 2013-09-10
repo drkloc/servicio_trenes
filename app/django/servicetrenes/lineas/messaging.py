@@ -2,7 +2,7 @@ from celery.messaging import establish_connection
 from kombu.compat import Publisher, Consumer
 from core.utils import get_redis_client
 
-import json
+import simplejson as json
 
 import logging
 from datetime import datetime
@@ -46,20 +46,20 @@ def process_proximos_trenes():
         except Exception as e:
             logger.debug(d, e)
         message.ack()
-    pts = ProximoTren.objects.filter(created__gt=before).order_by('-id')
+    pts = ProximoTren.objects.filter(created__gt=before)
+    pts = pts.order_by('-id')
     pts = [
         {
-            'linea': pt.linea.nombre,
-            'estacion': pt.estacion,
+            'linea': str(pt.linea.nombre),
+            'estacion': str(pt.estacion),
             'proximos_origen': pt.proximos_origen,
             'proximos_destino': pt.proximos_destino,
-        }
-        for pt in pts
+        } for pt in pts
     ]
     r = get_redis_client()
     r.publish(
         'proximos-trenes',
-        pts
+        json.dumps(pts),
     )
     consumer.close()
     connection.close()

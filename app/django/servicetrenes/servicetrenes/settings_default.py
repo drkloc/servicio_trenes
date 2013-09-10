@@ -60,6 +60,7 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'django.contrib.staticfiles',
     'djcelery',
     'core',
     'lineas',

@@ -16,5 +16,6 @@ python-dateutil==2.1
 pytz==2013d
 pyzmq==13.1.0
 redis==2.8.0
+simplejson==3.3.0
 six==1.4.1
 zerorpc==0.4.3
