@@ -42,13 +42,38 @@ App.LineaRoute = Ember.Route.extend({
     }
 });
 
-Ember.Handlebars.helper('format-minutes', function(m){
-    if(m.length){
-        $.each(m, function(i){
-            m[i] = moment().add('minutes', m[i]).fromNow(true);
-        });
-        return m;
-    }else{
-        return 'No trains';
-    }
+Ember.Handlebars.helper('format-arrivals', function(arrivals){
+    var context;
+    var render = '';
+    var t = Handlebars.compile(
+        '<span class="{{classes}}">{{label}}</span>'
+    );
+    $.each(arrivals, function(i){
+        if (arrivals[i] === 0){
+            context = {
+                classes: 'badge badge-success',
+                label: 'En andén'
+            };
+        }else{
+            context = {
+                classes: 'badge',
+                label: arrivals[i]
+            };
+            if(context.label < 15){
+                context.classes += ' badge-warning';
+            }else{
+                context.classes += ' badge-important';
+            }
+        }
+        render += ' ' + t(context);
+    });
+    return new Handlebars.SafeString(render);
+});
+
+Ember.Handlebars.helper('estacion-destino', function(estaciones){
+    return estaciones[estaciones.length-1].estacion;
+});
+
+Ember.Handlebars.helper('estacion-origen', function(estaciones){
+    return estaciones[0].estacion;
 });

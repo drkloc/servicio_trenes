@@ -38,19 +38,19 @@
         <thead>
             <tr>
                 <th>Estación</th>
-                <th>Próximos Origen</th>
-                <th>Próximos Destino</th>
+                <th>Hacia {{estacion-destino estaciones}}</th>
+                <th>Hacia {{estacion-origen estaciones}}</th>
             </tr>
         </thead>
         <tbody>
             {{#each estacion in estaciones}}
-            <tr>
+            <tr class="flash">
                 <td>{{estacion.estacion}}</td>
                 <td>
-                    {{format-minutes estacion.proximos_origen}}
+                    {{format-arrivals estacion.proximos_origen}}
                 </td>
                 <td>
-                    {{format-minutes estacion.proximos_destino}}
+                    {{format-arrivals estacion.proximos_destino}}
                 </td>
             </tr>
             {{/each}}
