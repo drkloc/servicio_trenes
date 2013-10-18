@@ -1,20 +1,18 @@
 from fabric.api import *
-from fabric.decorators import hosts
+from fabric.contrib.files import exists
 import os
 FAB_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 
 def virtualenv(command):
-    if env.host_string is 'localhost':
-        with lcd(env.directory):
-            local("/bin/bash -l -c '%s && %s'" % (env.activate, command))
+    if env.host_string in ['localhost', '127.0.0.1']:
+        local("/bin/bash -l -c '%s && %s'" % (env.activate, command))
     else:
-        with cd(env.directory):
-            run("%s && %s" % (env.activate, command))
+        run("%s && %s" % (env.activate, command))
 
 
 def git_pull():
-    if env.host_string is 'localhost':
+    if env.host_string in ['localhost', '127.0.0.1']:
         with lcd(env.directory):
             local('git pull')
     else:
@@ -23,30 +21,47 @@ def git_pull():
 
 
 def setup_virtualenv():
-    if env.host_string is 'localhost':
-        with lcd(env.directory):
-            local('virtualenv . --distribute')
+    if env.host_string in ['localhost', '127.0.0.1']:
+        l = local
     else:
-        run('mkvirtualenv --no-site-packages --distribute coras')
+        l = run
 
-
-@hosts('DEV')
-def setflags():
-    virtualenv('export CFLAGS="-I/usr/local/include -L/opt/local/lib"')
+    if not exists(os.path.join(env.work_on, env.project)):
+        c = "WORKON_HOME=%s && source virtualenvwrapper.sh && mkvirtualenv %s" % (
+            env.work_on,
+            env.project,
+        )
+        if env.host_string in ['localhost', '127.0.0.1']:
+            l("/bin/bash -l -c '%s'" % c)
+        else:
+            l(c)
 
 
 def install_requirements():
-    setflags()
-    virtualenv('pip install -U -r %s' % (os.path.join(env.directory, 'requirements.txt')))
+    virtualenv('pip install -r %s' % (os.path.join(env.directory, 'requirements.txt')))
 
 
 def setup_app():
-    virtualenv('cd %s && python manage.py syncdb --noinput' % env.project_directory)
-    virtualenv('cd %s && python manage.py migrate' % env.project_directory)
+    if not exists('%s/logs' % env.log_dir):
+        virtualenv('cd %s && mkdir -p logs' % env.log_dir)
+    virtualenv('cd %s && python manage.py syncdb --noinput' % env.project)
+    virtualenv('cd %s && python manage.py collectstatic --noinput' % env.project)
+    virtualenv('cd %s && python manage.py crear_lineas' % env.project)
 
+def restart_celery():
+    pass
+    # run('/home/teo/bin/supervisorctl restart dtcelerybeat dtceleryd')
 
 def freeze():
-    virtualenv('pip freeze | grep -v distribute | grep -v wsgiref > requirements.txt')
+    virtualenv(
+        'pip freeze | %s > %s' % (
+            'grep -v distribute | grep -v wsgiref',
+            os.path.join(
+                env.directory,
+                'requirements.txt'
+            )
+        )
+    )
 
 
 def push(message):
@@ -55,17 +70,37 @@ def push(message):
     local('git push')
 
 
-def DEV():
+def LOCAL():
     env.hosts = ['localhost']
+    env.project = 'horariostrenes'
+    env.work_on = '~/.virtualenvs/horarios-trenes'
     env.directory = FAB_ROOT
-    env.virtualenv = '~/.virtualenvs/horarios-trenes'
-    env.activate = 'source %s' % os.path.join(env.virtualenv, 'bin/activate')
-    env.project_directory = 'redminescore'
+    env.activate = 'source %s' % os.path.join(env.work_on, 'bin/activate')
+
+
+def DEV():
+    env.hosts = ['127.0.0.1']
+    env.project = 'servicetrenes'
+    env.log_dir = os.path.join(
+        FAB_ROOT,
+        env.project,
+        env.project
+    )
+    env.user = 'horariostrenes'
+    env.password = 'horariostrenes'
+    env.work_on = '/home/%s/.virtualenvs/' % env.user
+    env.directory = FAB_ROOT
+    env.activate = 'source %s' % os.path.join(
+        env.work_on,
+        env.project,
+        'bin/activate'
+    )
 
 
 def setup():
     setup_virtualenv()
     install_requirements()
+    setup_app()
 
 
 def update():

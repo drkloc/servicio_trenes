@@ -1,6 +1,6 @@
 
 $(document).ready(function(){
-    var trenes = io.connect('http://localhost:9000');
+    var trenes = io.connect(socket_server);
     trenes.on('connect', function() {
         console.log('connected to socket');
         trenes.emit("subscribe");

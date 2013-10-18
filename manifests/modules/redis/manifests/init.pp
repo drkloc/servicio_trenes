@@ -1,7 +1,8 @@
-class redis {
+class redis($ip, $port=6379) {
   Package{
     ensure => present,
   }
+
   package { 'epel-release-6-8.noarch':
     provider => 'rpm',
     source => 'http://epel.mirror.mendoza-conicet.gob.ar/6/x86_64/epel-release-6-8.noarch.rpm',
@@ -17,7 +18,7 @@ class redis {
 
   file { "/etc/redis.conf":
     mode    => "0644",
-    source  => "puppet:///modules/redis/redis.conf",
+    content => template('redis/redis.conf.erb'),
     require => Package["redis"],
     owner   => "root",
     group   => "root",
@@ -30,7 +31,11 @@ class redis {
     owner  => "root",
     group  => "root",
   }
-
+  firewall { '100 allow redis-server access':
+    port   => [$port],
+    proto  => tcp,
+    action => accept,
+  }
   service { "redis-server":
     ensure    => running,
     enable    => true,

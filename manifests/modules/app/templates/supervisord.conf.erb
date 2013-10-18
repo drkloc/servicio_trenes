@@ -1,0 +1,45 @@
+
+[supervisord]
+http_port=/var/tmp/supervisor.sock ; (default is to run a UNIX domain socket server)
+logfile=/var/log/supervisor/supervisord.log ; (main log file;default $CWD/supervisord.log)
+logfile_maxbytes=50MB       ; (max main logfile bytes b4 rotation;default 50MB)
+logfile_backups=10          ; (num of main logfile rotation backups;default 10)
+loglevel=info               ; (logging level;default info; others: debug,warn)
+pidfile=/var/run/supervisord.pid ; (supervisord pidfile;default supervisord.pid)
+nodaemon=false              ; (start in foreground if true;default false)
+minfds=1024                 ; (min. avail startup file descriptors;default 1024)
+minprocs=200                ; (min. avail process descriptors;default 200)
+
+
+[supervisorctl]
+serverurl=unix:///var/tmp/supervisor.sock ; use a unix:// URL  for a unix socket
+
+[program:horarios]
+command=/home/horariostrenes/.virtualenvs/servicetrenes/bin/gunicorn baid.wsgi:application -c /opt/apps/horariostrenes/django/servicetrenes/gunicorn.conf --pythonpath=/opt/apps/horariostrenes/django/servicetrenes
+directory=/opt/apps/horariostrenes/django/servicetrenes
+user=root
+numprocs=1
+autostart=true
+autorestart=true
+startsecs=20
+stopwaitsecs=600
+
+[program:celerybeat]
+command=/home/horariostrenes/.virtualenvs/servicetrenes/bin/python /opt/apps/horariostrenes/django/servicetrenes/manage.py celerybeat
+directory=/opt/apps/horariostrenes/django/servicetrenes
+user=root
+numprocs=1
+autostart=true
+autorestart=true
+startsecs=20
+stopwaitsecs=600
+
+[program:celeryd]
+command=/home/horariostrenes/.virtualenvs/servicetrenes/bin/python /opt/apps/horariostrenes/django/servicetrenes/manage.py celeryd -E loglevel=INFO
+directory=/opt/apps/horariostrenes/django/servicetrenes
+user=root
+numprocs=1
+autostart=true
+autorestart=true
+startsecs=20
+stopwaitsecs=600

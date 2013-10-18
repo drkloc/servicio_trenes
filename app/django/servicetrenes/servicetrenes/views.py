@@ -1,6 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from lineas.documents import Linea
+from django.conf import settings
 from datetime import datetime, date
 import simplejson as json
 
@@ -18,6 +19,7 @@ def index(request, t='base.html'):
     lineas = [
         {
             'nombre': l.nombre,
+            'SOCKET_SERVER': settings.SOCKET_SERVER,
             'estaciones': [
                 {
                     'estacion': e,

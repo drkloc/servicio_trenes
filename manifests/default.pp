@@ -6,64 +6,19 @@ service{"iptables":
     ensure => stopped,
 }
 
-# package { 'epel-release-6-8.noarch':
-#   provider => 'rpm',
-#   source => 'http://epel.mirror.mendoza-conicet.gob.ar/6/x86_64/epel-release-6-8.noarch.rpm',
-#   ensure => present
-# }
+class {'redis':
+	ip => '127.0.0.1',
+}
 
-# package{
-#   ['libevent-devel', 'libevent-headers']:
-# }
+class {'mongodb':
+	ip => '127.0.0.1',
+}
 
-# class systools{
-#   package {
-#     ['curl', 'wget']:
-#       require => Package['epel-release-6-8.noarch']
-#   }
-# }
+class {'app':
+	source => $source,
+	ip => $ip,
+	redis => '127.0.0.1:6379',
+	mongo => 'horariostrenes:127.0.0.1:27017',
+	debug => $debug,
+}
 
-# class python{
-#   package{
-#     ['python-devel']:
-#       require => Package['epel-release-6-8.noarch'],
-#   }
-
-#   package {
-#     [
-#       'python-pip',
-#       'python-setuptools',
-#     ]:
-#       require => Package['python-devel']
-#   }
-#   package {
-#     ['fabric', 'virtualenv']:
-#       provider => 'pip',
-#       require  => Package[
-#         'python-devel',
-#         'python-pip',
-#         'python-setuptools'
-#       ],
-#   }
-# }
-
-# class nodejs{
-#   package{
-#     ['nodejs', 'npm']:
-#       require => Package['epel-release-6-8.noarch'],
-#   }
-# }
-
-# class mongodb{
-#   package {
-#     ['mongodb-server', 'mongodb']:
-#       require => Package['epel-release-6-8.noarch']
-#   }
-#   service { "mongod":
-#     enable => true,
-#     ensure => running
-#   }
-# }
-
-include redis
-include django_app

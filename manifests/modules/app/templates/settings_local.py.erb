@@ -1,0 +1,36 @@
+from settings_default import *
+
+<% if @debug == "true" %>
+DEBUG = True
+<% else %>
+DEBUG = False
+<% end %>
+
+<% if @ssl == "true" %>
+SESSION_COOKIE_SECURE = True
+<% end %>
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.dummy',
+    }
+}
+
+MEDIA_ROOT = os.path.join(SITE_ROOT, '../../../media')
+STATIC_ROOT = os.path.join(SITE_ROOT, '../../../static')
+
+ALLOWED_HOSTS =['<%= @ip %>']
+
+from mongoengine import connect
+(mongo_db, mongo_host, mongo_port) = "<%= @mongo %>".split(':')
+connect(mongo_db, host=mongo_host, port=int(mongo_port))
+
+BROKER_URL = 'redis://<%= @redis %>/0'
+PUBSUB_URL = 'redis://<%= @redis %>/1'
+
+RPC_SERVER = 'tcp://0.0.0.0:4242'
+
+SOCKET_SERVER = 'http://<%= @ip %>/socket'
+
+import djcelery
+djcelery.setup_loader()
