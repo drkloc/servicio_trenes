@@ -44,9 +44,11 @@ def install_requirements():
 def setup_app():
     if not exists('%s/logs' % env.log_dir):
         virtualenv('cd %s && mkdir -p logs' % env.log_dir)
-    virtualenv('cd %s && python manage.py syncdb --noinput' % env.project)
     virtualenv('cd %s && python manage.py collectstatic --noinput' % env.project)
     virtualenv('cd %s && python manage.py crear_lineas' % env.project)
+
+def setup_socket():
+    virtualenv('cd %s && npm install' % env.socket)
 
 def restart_celery():
     pass
@@ -86,8 +88,13 @@ def DEV():
         env.project,
         env.project
     )
+    env.socket = os.path.join(
+        FAB_ROOT,
+        '..',
+        'node'
+    )
     env.user = 'horariostrenes'
-    env.password = 'horariostrenes'
+    env.password = 'baid'
     env.work_on = '/home/%s/.virtualenvs/' % env.user
     env.directory = FAB_ROOT
     env.activate = 'source %s' % os.path.join(
@@ -112,3 +119,6 @@ def update():
 def quick_update():
     git_pull()
     setup_app()
+
+
+

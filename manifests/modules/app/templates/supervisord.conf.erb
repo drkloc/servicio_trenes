@@ -15,7 +15,7 @@ minprocs=200                ; (min. avail process descriptors;default 200)
 serverurl=unix:///var/tmp/supervisor.sock ; use a unix:// URL  for a unix socket
 
 [program:horarios]
-command=/home/horariostrenes/.virtualenvs/servicetrenes/bin/gunicorn baid.wsgi:application -c /opt/apps/horariostrenes/django/servicetrenes/gunicorn.conf --pythonpath=/opt/apps/horariostrenes/django/servicetrenes
+command=/home/horariostrenes/.virtualenvs/servicetrenes/bin/gunicorn servicetrenes.wsgi:application -c /opt/apps/horariostrenes/django/servicetrenes/gunicorn.conf --pythonpath=/opt/apps/horariostrenes/django/servicetrenes
 directory=/opt/apps/horariostrenes/django/servicetrenes
 user=root
 numprocs=1
@@ -37,6 +37,16 @@ stopwaitsecs=600
 [program:celeryd]
 command=/home/horariostrenes/.virtualenvs/servicetrenes/bin/python /opt/apps/horariostrenes/django/servicetrenes/manage.py celeryd -E loglevel=INFO
 directory=/opt/apps/horariostrenes/django/servicetrenes
+user=root
+numprocs=1
+autostart=true
+autorestart=true
+startsecs=20
+stopwaitsecs=600
+
+[program:socket]
+command=/usr/bin/node /opt/apps/horariostrenes/node/app.js
+directory=/opt/apps/horariostrenes/node
 user=root
 numprocs=1
 autostart=true

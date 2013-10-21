@@ -1,11 +1,4 @@
 class mongodb($ip, $port=27017) {
-    Package{
-        ensure => present,
-    }
-    package { 'epel-release-6-8.noarch':
-        provider => 'rpm',
-        source => 'http://epel.mirror.mendoza-conicet.gob.ar/6/x86_64/epel-release-6-8.noarch.rpm',
-    }
     package {
         ['mongodb-server', 'mongodb']:
         require => Package['epel-release-6-8.noarch']

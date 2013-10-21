@@ -19,7 +19,6 @@ def index(request, t='base.html'):
     lineas = [
         {
             'nombre': l.nombre,
-            'SOCKET_SERVER': settings.SOCKET_SERVER,
             'estaciones': [
                 {
                     'estacion': e,
@@ -32,7 +31,9 @@ def index(request, t='base.html'):
     return render_to_response(
     	t,
     	{
-    		'lineas': DateTimeJSONEncoder().encode(lineas)
+    		'lineas': DateTimeJSONEncoder().encode(lineas),
+            'SOCKET_SERVER_IP': settings.SOCKET_SERVER_IP,
+            'SOCKET_SERVER_RESOURCE': settings.SOCKET_SERVER_RESOURCE
     	},
     	RequestContext(request)
     )

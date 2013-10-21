@@ -1,6 +1,11 @@
 
 $(document).ready(function(){
-    var trenes = io.connect(socket_server);
+    var trenes = io.connect(
+        socket_server_ip,
+        {
+            resource: socket_server_resource
+        }
+    );
     trenes.on('connect', function() {
         console.log('connected to socket');
         trenes.emit("subscribe");

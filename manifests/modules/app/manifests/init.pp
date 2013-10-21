@@ -2,16 +2,11 @@
 class app($source, $ip, $redis, $mongo, $debug, $ssl){
   Exec { path => [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/" ] }
 
-  Package{
-    ensure => present,
-  }
-
-  package { 'epel-release-6-8.noarch':
-    provider => 'rpm',
-    source => 'http://epel.mirror.mendoza-conicet.gob.ar/6/x86_64/epel-release-6-8.noarch.rpm',
-  }
-
   package{ 'python-devel': require => Package['epel-release-6-8.noarch']}
+
+  package{ 'npm':
+    require => Package['epel-release-6-8.noarch']
+  }
 
   package {
     ['sqlite', 'git', 'curl', 'mercurial']:
@@ -125,6 +120,13 @@ class app($source, $ip, $redis, $mongo, $debug, $ssl){
     ignore => ['node_modules/*', 'node_modules']
   }
 
+  exec { "fab DEV setup_socket":
+    cwd => '/opt/apps/horariostrenes/django/',
+    timeout => 0,
+    require => Package['npm'],
+    logoutput => true,
+  }
+
   # Setup nginx
   package { 'nginx':
     provider => 'rpm',
@@ -162,7 +164,7 @@ class app($source, $ip, $redis, $mongo, $debug, $ssl){
     ensure    => running,
     enable    => true,
     require   => [
-      Exec["fab DEV setup_app"]
+      Exec["fab DEV setup_app", "fab DEV setup_socket"]
     ],
   }
 

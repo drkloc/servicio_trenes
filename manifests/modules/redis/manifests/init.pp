@@ -1,13 +1,4 @@
 class redis($ip, $port=6379) {
-  Package{
-    ensure => present,
-  }
-
-  package { 'epel-release-6-8.noarch':
-    provider => 'rpm',
-    source => 'http://epel.mirror.mendoza-conicet.gob.ar/6/x86_64/epel-release-6-8.noarch.rpm',
-  }
-  
   package { "redis": require => Package["epel-release-6-8.noarch"]}
 
   file { "/var/lib/redis/":

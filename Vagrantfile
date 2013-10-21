@@ -6,6 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "centos64"
   config.vm.box_url = "http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130309.box"
 
+  config.vm.network :private_network, ip: "192.168.1.216"
   config.vm.provision :puppet do |puppet|
     puppet.manifests_path = "manifests"
     puppet.manifest_file = "default.pp"
