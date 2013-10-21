@@ -32,6 +32,12 @@ class app($source, $ip, $redis, $mongo, $debug, $ssl){
         action => accept,
   }
 
+  firewall { '100 allow zerorpc access':
+        port   => [4242],
+        proto  => tcp,
+        action => accept,
+  }
+
   firewall { '501 Allow all outbound traffic':
     chain      => 'OUTPUT',
     action     => 'accept',
@@ -120,11 +126,13 @@ class app($source, $ip, $redis, $mongo, $debug, $ssl){
     ignore => ['node_modules/*', 'node_modules']
   }
 
-  exec { "fab DEV setup_socket":
-    cwd => '/opt/apps/horariostrenes/django/',
+  exec { "npm install":
+    cwd => '/opt/apps/horariostrenes/node/',
     timeout => 0,
     require => Package['npm'],
     logoutput => true,
+    user => 'vagrant',
+    environment => 'HOME=/home/vagrant'
   }
 
   # Setup nginx
@@ -164,7 +172,7 @@ class app($source, $ip, $redis, $mongo, $debug, $ssl){
     ensure    => running,
     enable    => true,
     require   => [
-      Exec["fab DEV setup_app", "fab DEV setup_socket"]
+      Exec["fab DEV setup_app", "npm install"]
     ],
   }
 

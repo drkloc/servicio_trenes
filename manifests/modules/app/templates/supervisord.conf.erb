@@ -53,3 +53,13 @@ autostart=true
 autorestart=true
 startsecs=20
 stopwaitsecs=600
+
+[program:zrpc]
+command=/home/horariostrenes/.virtualenvs/servicetrenes/bin/python /opt/apps/horariostrenes/django/servicetrenes/zrpc.py
+directory=/opt/apps/horariostrenes/django/servicetrenes
+user=root
+numprocs=1
+autostart=true
+autorestart=true
+startsecs=20
+stopwaitsecs=600

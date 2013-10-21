@@ -4,12 +4,9 @@ from django.core.management import setup_environ
 from servicetrenes import settings
 setup_environ(settings)
 
-from datetime import datetime, timedelta
 from lineas.documents import Linea, ProximoTren
 
 import zerorpc
-
-DATA_NOT_OLDER_THAN = 45
 
 class ZRPCServer(object):
     def lineas(self):
@@ -35,9 +32,8 @@ class ZRPCServer(object):
             l = Linea.objects.get(id=linea)
             pts = ProximoTren.objects.filter(
                 linea=l,
-                _estacion=int(estacion),
-                created__gt=datetime.now()-timedelta(seconds=DATA_NOT_OLDER_THAN)
-            ).order_by('-id')
+                _estacion=int(estacion)
+            )
             if pts.count():
                 pts = pts[0]
                 return [

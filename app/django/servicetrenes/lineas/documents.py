@@ -10,10 +10,6 @@ class Linea(Document):
         'indexes': ['nombre', 'service_id']
     }
 
-    @property
-    def proximos(self):
-        return ProximoTren.objects.filter(linea=self)
-
     def __unicode__(self):
         return u'%s - %s' % (self.nombre, self.service_id)
 
@@ -28,7 +24,8 @@ class ProximoTren(Document):
     meta = {
         'max_documents': 1000000,
         'max_size': 50 * 1024 * 1024,
-        'indexes': ['_estacion', 'created']
+        'indexes': ['_estacion', 'created'],
+        'ordering': ['-created']
     }
 
     @property

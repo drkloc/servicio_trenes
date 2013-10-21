@@ -1,37 +1,39 @@
-<% if @ssl == "true" %>
-server {
-    listen 80;
-    return 301 https://$host$request_uri;
-}
-<% end %>
-
-server {
-    listen       <% if @ssl == "true" %>443<% else %>80<%end%> default_server;
-    server_name  _;
-    access_log  /opt/apps/horariostrenes/nginx_access.log;
-    error_log  /opt/apps/horariostrenes/nginx_error.log;
-
-    location / {
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+http{
+    <% if @ssl == "true" %>
+    server {
+        listen 80;
+        return 301 https://$host$request_uri;
     }
+    <% end %>
 
-    location /static {
-        autoindex off;
-        alias /opt/apps/horariostrenes/static/;
-    }
+    server {
+        listen       <% if @ssl == "true" %>443<% else %>80<%end%> default_server;
+        server_name  _;
+        access_log  /opt/apps/horariostrenes/nginx_access.log;
+        error_log  /opt/apps/horariostrenes/nginx_error.log;
 
-    location /media {
-        autoindex off;
-        alias /opt/apps/horariostrenes/media/;
-    }
+        location / {
+            proxy_pass http://127.0.0.1:8000;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
 
-    location /socket.io/ {
-        proxy_pass http://127.0.0.1:9000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
+        location /static {
+            autoindex off;
+            alias /opt/apps/horariostrenes/static/;
+        }
+
+        location /media {
+            autoindex off;
+            alias /opt/apps/horariostrenes/media/;
+        }
+
+        location /socket.io/ {
+            proxy_pass http://127.0.0.1:9000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
     }
 }

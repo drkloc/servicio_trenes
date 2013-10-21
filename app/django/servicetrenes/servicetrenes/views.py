@@ -1,6 +1,6 @@
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from lineas.documents import Linea
+from lineas.documents import Linea, ProximoTren
 from django.conf import settings
 from datetime import datetime, date
 import simplejson as json
@@ -15,10 +15,10 @@ class DateTimeJSONEncoder(json.JSONEncoder):
 
 
 def index(request, t='base.html'):
-    lineas = Linea.objects.all()
-    # Query latest trains for each line
+    lineas = Linea.objects.all()    
     lineas = [
         {
+            'instance': l,
             'nombre': l.nombre,
             'estaciones': [
                 {
@@ -29,6 +29,18 @@ def index(request, t='base.html'):
             ]
         } for l in lineas
     ]
+    for i in range(len(lineas)):
+        l = lineas[i]
+        for j in range(len(l['estaciones'])):
+            pts = ProximoTren.objects.filter(
+                linea=l['instance'],
+                _estacion=int(j)
+            )
+            if pts.count():
+                l['estaciones'][j]['proximos_destino'] = pts[0].proximos_destino
+                l['estaciones'][j]['proximos_origen'] = pts[0].proximos_origen
+        l.pop('instance', None)
+        lineas[i] = l
     return render_to_response(
     	t,
     	{

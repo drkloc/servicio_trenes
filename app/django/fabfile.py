@@ -47,9 +47,6 @@ def setup_app():
     virtualenv('cd %s && python manage.py collectstatic --noinput' % env.project)
     virtualenv('cd %s && python manage.py crear_lineas' % env.project)
 
-def setup_socket():
-    virtualenv('cd %s && npm install' % env.socket)
-
 def restart_celery():
     pass
     # run('/home/teo/bin/supervisorctl restart dtcelerybeat dtceleryd')
@@ -88,11 +85,6 @@ def DEV():
         env.project,
         env.project
     )
-    env.socket = os.path.join(
-        FAB_ROOT,
-        '..',
-        'node'
-    )
     env.user = 'horariostrenes'
     env.password = 'baid'
     env.work_on = '/home/%s/.virtualenvs/' % env.user
@@ -119,6 +111,3 @@ def update():
 def quick_update():
     git_pull()
     setup_app()
-
-
-
