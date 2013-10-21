@@ -16,6 +16,7 @@ class DateTimeJSONEncoder(json.JSONEncoder):
 
 def index(request, t='base.html'):
     lineas = Linea.objects.all()
+    # Query latest trains for each line
     lineas = [
         {
             'nombre': l.nombre,
@@ -32,8 +33,7 @@ def index(request, t='base.html'):
     	t,
     	{
     		'lineas': DateTimeJSONEncoder().encode(lineas),
-            'SOCKET_SERVER_IP': settings.SOCKET_SERVER_IP,
-            'SOCKET_SERVER_RESOURCE': settings.SOCKET_SERVER_RESOURCE
+            'SOCKET_SERVER': settings.SOCKET_SERVER
     	},
     	RequestContext(request)
     )

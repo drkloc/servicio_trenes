@@ -30,8 +30,7 @@ PUBSUB_URL = 'redis://<%= @redis %>/1'
 
 RPC_SERVER = 'tcp://0.0.0.0:4242'
 
-SOCKET_SERVER_IP = 'http://<%= @ip %>'
-SOCKET_SERVER_RESOURCE = 'socket'
+SOCKET_SERVER = 'http://<%= @ip %>'
 
 import djcelery
 djcelery.setup_loader()

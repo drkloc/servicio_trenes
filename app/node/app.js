@@ -1,9 +1,4 @@
-var io = require('socket.io').listen(
-	9000,
-	{
-		resource: '/'
-	}
-);
+var io = require('socket.io').listen(9000);
 
 var redis = require("redis");
 var client = redis.createClient();
