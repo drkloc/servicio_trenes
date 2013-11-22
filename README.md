@@ -4,7 +4,7 @@ This is a proof of concept that transforms http://www.mininterior.gov.ar train s
 
 ```bash
 git submodule init
-git submodule foreach git pull
+git submodule update
 vagrant up
 ```
 

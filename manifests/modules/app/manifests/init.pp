@@ -94,6 +94,11 @@ class app($source, $ip, $redis, $mongo, $debug, $ssl){
     require => File["/opt/apps/horariostrenes/django"]
   }
 
+  file { "/opt/apps/horariostrenes/django/servicetrenes/servicetrenes/log/":
+    ensure => "directory",
+    require => File["/opt/apps/horariostrenes/django"]
+  }
+
   exec { "fab DEV setup_virtualenv":
     cwd => '/opt/apps/horariostrenes/django/',
     require => File['/opt/apps/horariostrenes/django/servicetrenes/servicetrenes/settings_local.py'],
@@ -131,7 +136,6 @@ class app($source, $ip, $redis, $mongo, $debug, $ssl){
     timeout => 0,
     require => Package['npm'],
     logoutput => true,
-    user => 'vagrant',
     environment => 'HOME=/home/vagrant'
   }
 
